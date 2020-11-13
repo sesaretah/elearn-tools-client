@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useParams,
+  Link
+} from "react-router-dom";
+import './css/bulma.css';
+import './css/custom.css';
+import Rooms from "./components/Room/Index.jsx";
+import Room from "./components/Room/Show.jsx";
+import Login from "./components/User/Login.jsx";
+import SignUp from "./components/User/SignUp.jsx";
+import Form from "./components/Room/Form.jsx";
 
-function App() {
+export default function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <Router>
+      <Switch>
+        <Route path="/" exact component={Rooms} />
+        <Route path="/rooms" exact component={Rooms} />
+        <Route path="/rooms/new" exact component={Form} />
+        <Route path="/rooms/:id" exact component={Room} />
+        <Route path="/login" exact component={Login} />
+        <Route path="/signup" exact component={SignUp} />
+        
+      </Switch>
+      </Router>
     </div>
   );
 }
-
-export default App;
