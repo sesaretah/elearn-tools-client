@@ -15,9 +15,9 @@ const Main = (props) => {
       height = ''
     }
     return (
-      <div class="column ">
+      <div class="column is-horizontal-center has-text-centered">
         <video
-          controls={false}
+          controls={true}
           key={id}
           id={"video-" + id}
           src=""
@@ -171,7 +171,7 @@ const Main = (props) => {
             {highVidoes()}
           </div>
 
-          <div className="columns mt-2 is-mobile is-multiline is-centered p-4 ">
+          <div className="columns mt-2 is-mobile is-multiline is-centered p-4 is-horizontal-center">
             {presentVideo()}
           </div>
 

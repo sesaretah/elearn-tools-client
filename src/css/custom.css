@@ -248,3 +248,60 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+.w-150 {
+  width: 150px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.h-100 {
+  height: 100%;
+}
+.h-90 {
+  height: 90%;
+}
+
+.ai-b {
+  align-items: baseline;
+}
+
+.al-fe {
+  align-self: flex-end;
+}
+
+.is-horizontal-center {
+  justify-content: center;
+}
+
+.mrl-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.d-block {
+  display: block;
+}
+
+
+.badge {
+    position: relative;
+    top: -3px;
+    right: 4px;
+    transform: translate(50%,-50%);
+}
+.badge:empty {
+    display: inline-block;
+    width: .5rem;
+    height: .5rem;
+    min-width: 0;
+    min-height: auto;
+    padding: 0;
+    border-radius: 50%;
+}
+
+.bg-red {
+  background: #d63939;
+}

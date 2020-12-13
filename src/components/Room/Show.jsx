@@ -7,7 +7,7 @@ import { dict } from "../../Dict";
 import { conf } from "../../conf";
 import Janus from "../../lib/kitty/janus.js";
 import SideBar from "./SideBar";
-import Menu from "./Menu";
+import Menu from "./Menuu";
 import Main from "./Main";
 import Header from "./Header";
 
@@ -58,8 +58,9 @@ export default class Layout extends React.Component {
         this.cameraPublisher = this.cameraPublisher.bind(this);
         this.toggleDesktop = this.toggleDesktop.bind(this)
         this.changeParticipantRole = this.changeParticipantRole.bind(this)
-
+        this.sendChat = this.sendChat.bind(this)
         
+
         this.state = {
             token: window.localStorage.getItem("token"),
             shortners: null,
@@ -88,7 +89,8 @@ export default class Layout extends React.Component {
             lowFeeds: [],
             participants: [],
             room: null,
-            notification: {}
+            notification: {},
+            chats: []
         };
     }
     componentWillMount() {
@@ -640,6 +642,12 @@ export default class Layout extends React.Component {
                     self.requestAccepted(message['uuid'], 'presenter')
                 }
 
+                if (message['request'] === 'chat') {
+                    if (self.state.userUUID !== message['uuid']) {
+                        self.setState({ chats: self.state.chats.concat({ display: message['display'], uuid: message['uuid'], body: message['body'], time: message['time'] }) });
+                    }
+                }
+
                 if (message['request'] === 'removeRequest') {
                     self.setState({
                         requests: self.state.requests.filter(item => item.uuid != message['uuid'])
@@ -691,9 +699,9 @@ export default class Layout extends React.Component {
 
     requestAccepted(requesterUUId, role = 'speaker') {
         this.changeParticipantRole(requesterUUId, role)
-    }   
+    }
 
-    changeParticipantRole(participantUUID, role){
+    changeParticipantRole(participantUUID, role) {
         let newState = Object.assign({}, this.state);
         var participant = this.findParticpantByUuid(participantUUID)
         var index = this.participantIndex(participantUUID)
@@ -779,6 +787,28 @@ export default class Layout extends React.Component {
             text: JSON.stringify(message),
             error: function (reason) { console.log(reason); },
             success: function () { console.log('sent'); },
+        });
+    }
+
+    sendChat(m) {
+        var self = this;
+        var message = {
+            textroom: "message",
+            transaction: Janus.randomString(12),
+            room: this.state.roomId,
+            request: 'chat',
+            uuid: this.state.userUUID,
+            display: this.state.fullname,
+            body: m,
+            time: Date.now(),
+        };
+        this.state.sfutest.data({
+            text: JSON.stringify(message),
+            error: function (reason) { console.log(reason); },
+            success: function () {
+                console.log(message)
+                self.setState({ chats: self.state.chats.concat({ display: message['display'], uuid: message['uuid'], body: message['body'], time: message['time'] }) });
+            },
         });
     }
 
@@ -1336,7 +1366,9 @@ export default class Layout extends React.Component {
             requests,
             participants,
             room,
-            notification
+            notification,
+            chats,
+            roomId
         } = this.state;
         return (
             <React.Fragment>
@@ -1344,9 +1376,11 @@ export default class Layout extends React.Component {
                 <Header token={token} />
                 <div class="columns ">
 
-                    <Menu 
-                        room={this.state.room} 
-                        participants={participants}    
+                    <Menu
+                        room={this.state.room}
+                        participants={participants}
+                        sendChat={this.sendChat}
+                        chats={chats}
                     />
                     <Main
                         beforeRemove={this.beforeRemove}
@@ -1380,6 +1414,7 @@ export default class Layout extends React.Component {
                         toggleDesktop={this.toggleDesktop}
                         publishedDesktop={publishedDesktop}
                         notification={notification}
+                        
 
                     />
                 </div>
